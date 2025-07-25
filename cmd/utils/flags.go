@@ -177,6 +177,11 @@ var (
 		Usage:    "MintMe.com Coin mainnet: pre-configured MintMe.com Coin mainnet",
 		Category: flags.EthCategory,
 	}
+	CPUchainFlag = &cli.BoolFlag{
+		Name:     "cpuchain",
+		Usage:    "CPUchain mainnet: pre-configured CPUchain mainnet",
+		Category: flags.EthCategory,
+	}
 	MordorFlag = &cli.BoolFlag{
 		Name:     "mordor",
 		Usage:    "Mordor network: Ethereum Classic's cross-client proof-of-work test network",
@@ -1131,6 +1136,7 @@ var (
 		MainnetFlag,
 		ClassicFlag,
 		MintMeFlag,
+		CPUchainFlag,
 	}, TestnetFlags...)
 
 	// DatabaseFlags is the flag group of all database flags.
@@ -1209,6 +1215,8 @@ func setBootstrapNodes(ctx *cli.Context, cfg *p2p.Config) {
 			urls = params.ClassicBootnodes
 		case ctx.Bool(MintMeFlag.Name):
 			urls = params.MintMeBootnodes
+		case ctx.Bool(CPUchainFlag.Name):
+			urls = params.CPUchainBootnodes
 		case ctx.Bool(MordorFlag.Name):
 			urls = params.MordorBootnodes
 		case ctx.Bool(SepoliaFlag.Name):
@@ -1248,6 +1256,8 @@ func setBootstrapNodesV5(ctx *cli.Context, cfg *p2p.Config) {
 		urls = params.MordorBootnodes
 	case ctx.Bool(MintMeFlag.Name):
 		urls = params.MintMeBootnodes
+	case ctx.Bool(CPUchainFlag.Name):
+		urls = params.CPUchainBootnodes
 	case cfg.BootstrapNodesV5 != nil:
 		return // already set, don't apply defaults.
 	}
@@ -1693,6 +1703,8 @@ func dataDirPathForCtxChainConfig(ctx *cli.Context, baseDataDirPath string) stri
 		return filepath.Join(baseDataDirPath, "sepolia")
 	case ctx.Bool(MintMeFlag.Name):
 		return filepath.Join(baseDataDirPath, "mintme")
+	case ctx.Bool(CPUchainFlag.Name):
+		return filepath.Join(baseDataDirPath, "cpuchain")
 	case ctx.Bool(HoleskyFlag.Name):
 		return filepath.Join(baseDataDirPath, "holesky")
 	}
@@ -1945,7 +1957,7 @@ func CheckExclusive(ctx *cli.Context, args ...interface{}) {
 // SetEthConfig applies eth-related command line flags to the config.
 func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *ethconfig.Config) {
 	// Avoid conflicting network flags
-	CheckExclusive(ctx, MainnetFlag, DeveloperFlag, DeveloperPoWFlag, SepoliaFlag, ClassicFlag, MordorFlag, MintMeFlag, HoleskyFlag)
+	CheckExclusive(ctx, MainnetFlag, DeveloperFlag, DeveloperPoWFlag, SepoliaFlag, ClassicFlag, MordorFlag, MintMeFlag, CPUchainFlag, HoleskyFlag)
 	CheckExclusive(ctx, LightServeFlag, SyncModeFlag, "light")
 	CheckExclusive(ctx, DeveloperFlag, DeveloperPoWFlag, ExternalSignerFlag) // Can't use both ephemeral unlocked and external signer
 
@@ -2510,6 +2522,8 @@ func genesisForCtxChainConfig(ctx *cli.Context) *genesisT.Genesis {
 		genesis = params.DefaultSepoliaGenesisBlock()
 	case ctx.Bool(MintMeFlag.Name):
 		genesis = params.DefaultMintMeGenesisBlock()
+	case ctx.Bool(CPUchainFlag.Name):
+		genesis = params.DefaultCPUchainGenesisBlock()
 	case ctx.Bool(HoleskyFlag.Name):
 		genesis = params.DefaultHoleskyGenesisBlock()
 	case ctx.Bool(DeveloperFlag.Name):
@@ -2547,6 +2561,11 @@ func MakeChain(ctx *cli.Context, stack *node.Node, readonly bool) (*core.BlockCh
 		lyra2Config = &lyra2.Config{}
 	}
 
+	yespowerConfig, err := core.LoadYespowerConfig(chainDb, gspec)
+	if err != nil {
+		Fatalf("%v", err)
+	}
+
 	// Toggle PoW modes at user request.
 	if ctx.Bool(FakePoWFlag.Name) {
 		ethashConfig.PowMode = ethash.ModeFake
@@ -2554,7 +2573,7 @@ func MakeChain(ctx *cli.Context, stack *node.Node, readonly bool) (*core.BlockCh
 		ethashConfig.PowMode = ethash.ModePoissonFake
 	}
 
-	engine := ethconfig.CreateConsensusEngine(stack, &ethashConfig, cliqueConfig, lyra2Config, nil, false, chainDb)
+	engine := ethconfig.CreateConsensusEngine(stack, &ethashConfig, cliqueConfig, lyra2Config, yespowerConfig, nil, nil, false, chainDb)
 	if gcmode := ctx.String(GCModeFlag.Name); gcmode != gcModeFull && gcmode != gcModeArchive {
 		Fatalf("--%s must be either 'full' or 'archive'", GCModeFlag.Name)
 	}

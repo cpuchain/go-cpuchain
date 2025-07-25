@@ -1153,6 +1153,18 @@ func (g *Genesis) SetLyra2NonceTransition(n *uint64) error {
 	return g.Config.SetLyra2NonceTransition(n)
 }
 
+func (g *Genesis) GetYespowerPers() string {
+	return g.Config.GetYespowerPers()
+}
+
+func (g *Genesis) GetYespowerConsensusView() string {
+	return g.Config.GetYespowerConsensusView()
+}
+
+func (g *Genesis) GetYespowerConsensusViewBlock() *big.Int {
+	return g.Config.GetYespowerConsensusViewBlock()
+}
+
 func (g *Genesis) String() string {
 	j, _ := json.MarshalIndent(g, "", "    ")
 	return "Genesis: " + string(j)

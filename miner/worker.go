@@ -1097,6 +1097,14 @@ func (w *worker) prepareWork(genParams *generateParams) (*environment, error) {
 		if genParams.forceTime {
 			return nil, fmt.Errorf("invalid timestamp, parent %d given %d", parent.Time, timestamp)
 		}
+		// this will ensure we're not going off too far in the future
+		toWait := timestamp - parent.Time
+		if toWait <= 0 {
+			toWait = 1
+		}
+		wait := time.Duration(toWait) * time.Second
+		log.Info("Mining too far in the future", "wait", common.PrettyDuration(wait))
+		time.Sleep(wait)
 		timestamp = parent.Time + 1
 	}
 	// Construct the sealing block header.

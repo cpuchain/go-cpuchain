@@ -243,6 +243,9 @@ func ethFilter(args []string) (nodeFilter, error) {
 	case "mintme":
 		gb := core.GenesisToBlock(params.DefaultMintMeGenesisBlock(), nil)
 		filter = forkid.NewStaticFilter(params.MintMeChainConfig, gb)
+	case "cpuchain":
+		gb := core.GenesisToBlock(params.DefaultCPUchainGenesisBlock(), nil)
+		filter = forkid.NewStaticFilter(params.CPUChainConfig, gb)
 	default:
 		return nil, fmt.Errorf("unknown network %q", args[0])
 	}

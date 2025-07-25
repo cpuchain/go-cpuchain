@@ -37,6 +37,7 @@ func TestConsoleCmdNetworkIdentities(t *testing.T) {
 		{[]string{"--sepolia"}, 11155111, 11155111, params.SepoliaGenesisHash.Hex()},
 		{[]string{"--mordor"}, 7, 63, params.MordorGenesisHash.Hex()},
 		{[]string{"--mintme"}, 37480, 24734, params.MintMeGenesisHash.Hex()},
+		{[]string{"--cpuchain"}, 6516853, 6516853, params.CPUchainGenesisHash.Hex()},
 		{[]string{"--dev"}, 1337, 1337, "0x0"},
 		{[]string{"--dev.pow"}, 1337, 1337, "0x0"},
 	}

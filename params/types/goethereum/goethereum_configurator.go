@@ -839,6 +839,9 @@ func (c *ChainConfig) GetConsensusEngineType() ctypes.ConsensusEngineT {
 	if c.Lyra2 != nil {
 		return ctypes.ConsensusEngineT_Lyra2
 	}
+	if c.Yespower != nil {
+		return ctypes.ConsensusEngineT_Yespower
+	}
 	return ctypes.ConsensusEngineT_Ethash
 }
 
@@ -856,6 +859,12 @@ func (c *ChainConfig) MustSetConsensusEngineType(t ctypes.ConsensusEngineT) erro
 		c.Lyra2 = new(ctypes.Lyra2Config)
 		c.Ethash = nil
 		c.Clique = nil
+		return nil
+	case ctypes.ConsensusEngineT_Yespower:
+		c.Yespower = new(ctypes.YespowerConfig)
+		c.Ethash = nil
+		c.Clique = nil
+		c.Lyra2 = nil
 		return nil
 	default:
 		return ctypes.ErrUnsupportedConfigFatal
@@ -1242,4 +1251,36 @@ func (c *ChainConfig) SetLyra2NonceTransition(n *uint64) error {
 	c.Lyra2NonceTransitionBlock = setBig(c.Lyra2NonceTransitionBlock, n)
 
 	return nil
+}
+
+func (c *ChainConfig) GetYespowerPers() string {
+	if c.Yespower == nil {
+		return ""
+	}
+
+	if len(c.Yespower.Pers) == 0 {
+		return ""
+	}
+
+	return c.Yespower.Pers
+}
+
+func (c *ChainConfig) GetYespowerConsensusView() string {
+	if c.Yespower == nil {
+		return ""
+	}
+
+	if len(c.Yespower.ConsensusView) == 0 {
+		return ""
+	}
+
+	return c.Yespower.ConsensusView
+}
+
+func (c *ChainConfig) GetYespowerConsensusViewBlock() *big.Int {
+	if c.Yespower == nil {
+		return big.NewInt(0)
+	}
+
+	return c.Yespower.ConsensusViewBlock
 }

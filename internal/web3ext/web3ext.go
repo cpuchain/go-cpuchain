@@ -663,6 +663,7 @@ web3._extend({
 		new web3._extend.Method({
 			name: 'start',
 			call: 'miner_start',
+			params: 1
 		}),
 		new web3._extend.Method({
 			name: 'stop',

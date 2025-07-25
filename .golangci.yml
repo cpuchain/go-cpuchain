@@ -10,6 +10,7 @@ run:
     - core/genesis_alloc.go
     - params/alloc.go
     - params/alloc_mintme.go
+    - params/alloc_cpuchain.go
     - evmc/*
 
 linters:

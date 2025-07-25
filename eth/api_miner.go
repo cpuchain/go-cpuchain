@@ -88,3 +88,12 @@ func (api *MinerAPI) SetEtherbase(etherbase common.Address) bool {
 func (api *MinerAPI) SetRecommitInterval(interval int) {
 	api.e.Miner().SetRecommitInterval(time.Duration(interval) * time.Millisecond)
 }
+
+// GetHashrate returns the current hashrate of the miner.
+// Logic here is broken and will always return 0 because
+// 1. func (miner *Miner) Hashrate() is broken since golang doesn't allow converting bigger struct from smaller struct
+// 2. You need to pass the marked hashrate to main api thread while current sealer codes are not written to support it
+// Maybe minor refactor of the code is required to fix miner_getHashrate RPC method :(
+func (api *MinerAPI) GetHashrate() uint64 {
+	return api.e.Miner().Hashrate()
+}

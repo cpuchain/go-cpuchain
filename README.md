@@ -31,6 +31,7 @@ Networks supported by the respective go-ethereum packaged `geth` program.
 |        |                   | Tobalaba (EWF Testnet)                |                                                          |                      |
 |        |                   | Ephemeral development PoA network     | :heavy_check_mark:                                       | :heavy_check_mark:   |
 | MINTME | :zap:             | MintMe.com Coin                       | :heavy_check_mark:                                       |                      |
+| CPU    | :zap:             | CPUchain                              | :heavy_check_mark:                                       |                      |
 
 - :zap: = __Proof of Work__
 - :handshake: = __Proof of Authority__

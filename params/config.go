@@ -145,6 +145,7 @@ var (
 		TerminalTotalDifficultyPassed: false,
 		Ethash:                        new(ctypes.EthashConfig),
 		Clique:                        nil,
+		Yespower:                      nil,
 	}
 
 	AllDevChainProtocolChanges = &goethereum.ChainConfig{
@@ -288,6 +289,7 @@ var (
 		TerminalTotalDifficultyPassed: false,
 		Ethash:                        new(ctypes.EthashConfig),
 		Clique:                        nil,
+		Yespower:                      nil,
 	}
 )
 

@@ -302,6 +302,7 @@ type ConsensusEnginator interface {
 	EthashConfigurator
 	CliqueConfigurator
 	Lyra2Configurator
+	YespowerConfigurator
 }
 
 type EthashConfigurator interface {
@@ -371,6 +372,12 @@ type CliqueConfigurator interface {
 type Lyra2Configurator interface {
 	GetLyra2NonceTransition() *uint64
 	SetLyra2NonceTransition(n *uint64) error
+}
+
+type YespowerConfigurator interface {
+	GetYespowerPers() string
+	GetYespowerConsensusView() string
+	GetYespowerConsensusViewBlock() *big.Int
 }
 
 type BlockSealer interface {

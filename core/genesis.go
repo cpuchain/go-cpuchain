@@ -271,6 +271,40 @@ func LoadCliqueConfig(db ethdb.Database, genesis *genesisT.Genesis) (*ctypes.Cli
 	return nil, nil
 }
 
+func LoadYespowerConfig(db ethdb.Database, genesis *genesisT.Genesis) (*ctypes.YespowerConfig, error) {
+	stored := rawdb.ReadCanonicalHash(db, 0)
+	if stored != (common.Hash{}) {
+		storedcfg := rawdb.ReadChainConfig(db, stored)
+		if storedcfg != nil {
+			if storedcfg.GetConsensusEngineType() == ctypes.ConsensusEngineT_Yespower {
+				return &ctypes.YespowerConfig{
+					Pers:               storedcfg.GetYespowerPers(),
+					ConsensusView:      storedcfg.GetYespowerConsensusView(),
+					ConsensusViewBlock: storedcfg.GetYespowerConsensusViewBlock(),
+				}, nil
+			}
+		}
+	}
+	if genesis != nil {
+		if genesis.Config == nil {
+			return nil, errGenesisNoConfig
+		}
+		db := rawdb.NewMemoryDatabase()
+		genesisBlock := MustCommitGenesis(db, triedb.NewDatabase(db, nil), genesis)
+		if stored != (common.Hash{}) && genesisBlock.Hash() != stored {
+			return nil, &genesisT.GenesisMismatchError{Stored: stored, New: genesisBlock.Hash()}
+		}
+		if genesis.Config.GetConsensusEngineType() == ctypes.ConsensusEngineT_Yespower {
+			return &ctypes.YespowerConfig{
+				Pers:               genesis.Config.GetYespowerPers(),
+				ConsensusView:      genesis.Config.GetYespowerConsensusView(),
+				ConsensusViewBlock: genesis.Config.GetYespowerConsensusViewBlock(),
+			}, nil
+		}
+	}
+	return nil, nil
+}
+
 // LoadChainConfig loads the stored chain config if it is already present in
 // database, otherwise, return the config in the provided genesis specification.
 func LoadChainConfig(db ethdb.Database, genesis *genesisT.Genesis) (ctypes.ChainConfigurator, error) {
@@ -321,6 +355,8 @@ func configOrDefault(g *genesisT.Genesis, ghash common.Hash) ctypes.ChainConfigu
 		return params.SepoliaChainConfig
 	case ghash == params.MintMeGenesisHash:
 		return params.MintMeChainConfig
+	case ghash == params.CPUchainGenesisHash:
+		return params.CPUChainConfig
 	default:
 		return params.AllEthashProtocolChanges
 	}
@@ -431,6 +467,8 @@ func CommitGenesisState(db ethdb.Database, triedb *triedb.Database, blockhash co
 			genesis = params.DefaultMordorGenesisBlock()
 		case params.MintMeGenesisHash:
 			genesis = params.DefaultMintMeGenesisBlock()
+		case params.CPUchainGenesisHash:
+			genesis = params.DefaultCPUchainGenesisBlock()
 		case params.HoleskyGenesisHash:
 			genesis = params.DefaultHoleskyGenesisBlock()
 		}

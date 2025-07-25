@@ -344,6 +344,13 @@ func genesisToBlock(g *genesisT.Genesis, db ethdb.Database) *types.Block {
 	if g.Difficulty == nil {
 		head.Difficulty = vars.GenesisDifficulty
 	}
+	if g.Config != nil && g.Config.IsEnabled(g.Config.GetEIP1559Transition, common.Big0) {
+		if g.BaseFee != nil {
+			head.BaseFee = g.BaseFee
+		} else {
+			head.BaseFee = new(big.Int).SetUint64(vars.InitialBaseFee)
+		}
+	}
 	statedb.Commit(head.Number.Uint64(), false)
 	statedb.Database().TrieDB().Commit(root, true)
 

@@ -21,6 +21,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math/big"
 	"sort"
 	"strconv"
 
@@ -273,6 +274,7 @@ const (
 	ConsensusEngineT_Ethash
 	ConsensusEngineT_Clique
 	ConsensusEngineT_Lyra2
+	ConsensusEngineT_Yespower
 )
 
 func (c ConsensusEngineT) String() string {
@@ -283,6 +285,8 @@ func (c ConsensusEngineT) String() string {
 		return "clique"
 	case ConsensusEngineT_Lyra2:
 		return "lyra2"
+	case ConsensusEngineT_Yespower:
+		return "yespower"
 	default:
 		return "unknown"
 	}
@@ -298,6 +302,10 @@ func (c ConsensusEngineT) IsClique() bool {
 
 func (c ConsensusEngineT) IsLyra2() bool {
 	return c == ConsensusEngineT_Lyra2
+}
+
+func (c ConsensusEngineT) IsYespower() bool {
+	return c == ConsensusEngineT_Yespower
 }
 
 func (c ConsensusEngineT) IsUnknown() bool {
@@ -387,4 +395,16 @@ type Lyra2Config struct{}
 // String implements the stringer interface, returning the consensus engine details.
 func (c *Lyra2Config) String() string {
 	return "lyra2"
+}
+
+// YespowerConfig is the consensus engine configs for Yespower PoW network.
+type YespowerConfig struct {
+	Pers               string   `json:"pers"`                         // (optional) Yespower personalization string to differentiate PoW between chains
+	ConsensusView      string   `json:"consensusView"`                // (optional) ConsensusView contract to fetch block rewards
+	ConsensusViewBlock *big.Int `json:"consensusViewBlock,omitempty"` // (optional) ConsensusViewBlock to start using the contract
+}
+
+// String implements the stringer interface, returning the consensus engine details.
+func (c *YespowerConfig) String() string {
+	return "yespower"
 }

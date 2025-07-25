@@ -56,7 +56,7 @@ type allocItemStorageItem struct {
 	Val common.Hash
 }
 
-func makelist(g *genesisT.Genesis) allocList {
+func makelist(g *genesisT.Genesis) []allocItem {
 	items := make([]allocItem, 0, len(g.Alloc))
 	for addr, account := range g.Alloc {
 		var misc *allocItemMisc
