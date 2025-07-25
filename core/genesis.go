@@ -279,6 +279,8 @@ func LoadYespowerConfig(db ethdb.Database, genesis *genesisT.Genesis) (*ctypes.Y
 			if storedcfg.GetConsensusEngineType() == ctypes.ConsensusEngineT_Yespower {
 				return &ctypes.YespowerConfig{
 					Pers:               storedcfg.GetYespowerPers(),
+					N:                  storedcfg.GetYespowerN(),
+					R:                  storedcfg.GetYespowerR(),
 					ConsensusView:      storedcfg.GetYespowerConsensusView(),
 					ConsensusViewBlock: storedcfg.GetYespowerConsensusViewBlock(),
 				}, nil
@@ -297,6 +299,8 @@ func LoadYespowerConfig(db ethdb.Database, genesis *genesisT.Genesis) (*ctypes.Y
 		if genesis.Config.GetConsensusEngineType() == ctypes.ConsensusEngineT_Yespower {
 			return &ctypes.YespowerConfig{
 				Pers:               genesis.Config.GetYespowerPers(),
+				N:                  genesis.Config.GetYespowerN(),
+				R:                  genesis.Config.GetYespowerR(),
 				ConsensusView:      genesis.Config.GetYespowerConsensusView(),
 				ConsensusViewBlock: genesis.Config.GetYespowerConsensusViewBlock(),
 			}, nil

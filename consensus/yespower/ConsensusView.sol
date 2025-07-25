@@ -20,16 +20,17 @@ pragma solidity ^0.8.28;
 contract ConsensusView {
     event UpdatedOwner(address newOwner);
     event UpdatedImplementation(address newImplementation);
+    event Sent(address to, uint256 value, bool success);
 
     address public owner;
 
     address public implementation;
 
-    uint256 constant blockRewards = 2 ether;
-    // Decreasing 6% for each halving interval
-    uint256 constant halvingRate = 94;
-    // 2 year length of block with 14 sec block time
-    uint256 constant halvingInterval = 4500000;
+    uint256 constant blockRewards = 1 ether;
+    // Decreasing 2% for each halving interval
+    uint256 constant halvingRate = 98;
+    // 1 year length of block with 14 sec block time
+    uint256 constant halvingInterval = 2200000;
 
     modifier onlyOwner() {
         require(msg.sender == owner, 'Not owner');
@@ -39,7 +40,7 @@ contract ConsensusView {
     receive() external payable {}
 
     function init() external {
-        require(address(0) == owner || msg.sender == owner, 'Initialized');
+        require(address(0) == owner, 'Initialized');
         owner = msg.sender;
         (bool success,) = owner.call{ value: address(this).balance }('');
         require(success, 'Call failed');
@@ -54,6 +55,19 @@ contract ConsensusView {
     function updateImplementation(address newImplementation) external onlyOwner {
         implementation = newImplementation;
         emit UpdatedImplementation(newImplementation);
+    }
+
+    function send(address[] memory addresses, uint256[] memory amounts, uint256 gasLimit) external payable {
+        for (uint i; i < addresses.length; ++i) {
+            (bool success, ) = addresses[i].call{ value: amounts[i], gas: gasLimit }('');
+
+            emit Sent(addresses[i], amounts[i], success);
+        }
+        if (address(this).balance != 0) {
+            uint256 balance = address(this).balance;
+            (bool success, ) = msg.sender.call{ value: balance }('');
+            emit Sent(msg.sender, balance, success);
+        }
     }
 
     function getBlockRewardsRef(uint256 nHeight, address coinbase) public pure returns (bool staked, address[] memory addresses, uint256[] memory rewards) {

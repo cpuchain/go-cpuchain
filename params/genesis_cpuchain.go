@@ -24,7 +24,7 @@ import (
 	"github.com/ethereum/go-ethereum/params/types/genesisT"
 )
 
-var CPUchainGenesisHash = common.HexToHash("0xd4f9bdb12aca024701d5b35446ad768d70357a97321d1a868fa999e44ffdedec")
+var CPUchainGenesisHash = common.HexToHash("0xd997dc3a4553fdd669f78e94989215280697fe3d3af6476c7691f4c51db44c15")
 
 // CPUchainGenesisBlock returns the CPUchain genesis block.
 func DefaultCPUchainGenesisBlock() *genesisT.Genesis {

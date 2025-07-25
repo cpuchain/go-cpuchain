@@ -50,6 +50,8 @@ var (
 		CancunTime:                    nil,
 		Yespower: &ctypes.YespowerConfig{
 			Pers:               "",
+			N:                  2048,
+			R:                  32,
 			ConsensusView:      "0x0000000000000000000000000000000000637075",
 			ConsensusViewBlock: big.NewInt(0),
 		},

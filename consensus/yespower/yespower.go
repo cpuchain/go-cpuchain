@@ -44,6 +44,8 @@ import (
 type Yespower struct {
 	ethAPI             *ethapi.BlockChainAPI
 	pers               string
+	N                  uint32
+	r                  uint32
 	consensusView      string
 	consensusViewBlock *big.Int
 	consensusViewABI   abi.ABI
@@ -86,6 +88,8 @@ func New(config *Config, yesConfig *ctypes.YespowerConfig, ethAPI *ethapi.BlockC
 	yespower := &Yespower{
 		ethAPI:             ethAPI,
 		pers:               yesConfig.Pers,
+		N:                  yesConfig.N,
+		r:                  yesConfig.R,
 		consensusView:      yesConfig.ConsensusView,
 		consensusViewBlock: yesConfig.ConsensusViewBlock,
 		consensusViewABI:   cABI,
@@ -109,6 +113,8 @@ func New(config *Config, yesConfig *ctypes.YespowerConfig, ethAPI *ethapi.BlockC
 func NewTester(notify []string, noverify bool) *Yespower {
 	yespower := &Yespower{
 		pers:      "",
+		N:         2048,
+		r:         32,
 		fakeMode:  false,
 		fakeFail:  0,
 		fakeDelay: 0,
@@ -127,16 +133,16 @@ func (yespower *Yespower) calcHash(hash []byte, nonce uint64) *big.Int {
 	copy(seed, hash)
 	binary.LittleEndian.PutUint64(seed[32:], nonce)
 
-	result := compute(seed, yespower.pers)
+	result := compute(seed, yespower.N, yespower.r, yespower.pers)
 	return new(big.Int).SetBytes(result)
 }
 
-func compute(input []byte, per string) []byte {
+func compute(input []byte, N uint32, r uint32, per string) []byte {
 	var in unsafe.Pointer = C.CBytes(input)
 	var cPer unsafe.Pointer = unsafe.Pointer(C.CString(per))
 	var out unsafe.Pointer = C.malloc(32)
 
-	C.yespower_hash((*C.char)(in), C.uint(len(input)), (*C.char)(cPer), C.uint(len(per)), (*C.char)(out))
+	C.yespower_hash((*C.char)(in), C.uint(len(input)), C.uint(N), C.uint(r), (*C.char)(cPer), C.uint(len(per)), (*C.char)(out))
 
 	hashed := C.GoBytes(out, 32)
 

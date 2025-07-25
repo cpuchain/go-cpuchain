@@ -400,6 +400,8 @@ func (c *Lyra2Config) String() string {
 // YespowerConfig is the consensus engine configs for Yespower PoW network.
 type YespowerConfig struct {
 	Pers               string   `json:"pers"`                         // (optional) Yespower personalization string to differentiate PoW between chains
+	N                  uint32   `json:"N"`                            // (optional) Yespower N params
+	R                  uint32   `json:"r"`                            // (optional) Yespower r params
 	ConsensusView      string   `json:"consensusView"`                // (optional) ConsensusView contract to fetch block rewards
 	ConsensusViewBlock *big.Int `json:"consensusViewBlock,omitempty"` // (optional) ConsensusViewBlock to start using the contract
 }

@@ -466,7 +466,7 @@ func (yespower *Yespower) AccumulateContractRewards(header *types.Header, state 
 		return err
 	}
 
-	if staked == false {
+	if !staked {
 		log.Error("Miner is not staked")
 		return errors.New("Miner is not staked")
 	}

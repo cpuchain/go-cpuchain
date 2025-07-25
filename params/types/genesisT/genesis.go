@@ -1157,6 +1157,14 @@ func (g *Genesis) GetYespowerPers() string {
 	return g.Config.GetYespowerPers()
 }
 
+func (g *Genesis) GetYespowerN() uint32 {
+	return g.Config.GetYespowerN()
+}
+
+func (g *Genesis) GetYespowerR() uint32 {
+	return g.Config.GetYespowerR()
+}
+
 func (g *Genesis) GetYespowerConsensusView() string {
 	return g.Config.GetYespowerConsensusView()
 }

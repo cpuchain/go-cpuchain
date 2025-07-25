@@ -1265,6 +1265,30 @@ func (c *ChainConfig) GetYespowerPers() string {
 	return c.Yespower.Pers
 }
 
+func (c *ChainConfig) GetYespowerN() uint32 {
+	if c.Yespower == nil {
+		return 2048
+	}
+
+	if c.Yespower.N == 0 {
+		return 2048
+	}
+
+	return c.Yespower.N
+}
+
+func (c *ChainConfig) GetYespowerR() uint32 {
+	if c.Yespower == nil {
+		return 32
+	}
+
+	if c.Yespower.R == 0 {
+		return 32
+	}
+
+	return c.Yespower.R
+}
+
 func (c *ChainConfig) GetYespowerConsensusView() string {
 	if c.Yespower == nil {
 		return ""

@@ -376,6 +376,8 @@ type Lyra2Configurator interface {
 
 type YespowerConfigurator interface {
 	GetYespowerPers() string
+	GetYespowerN() uint32
+	GetYespowerR() uint32
 	GetYespowerConsensusView() string
 	GetYespowerConsensusViewBlock() *big.Int
 }
